@@ -29,4 +29,4 @@ jobs:
         push: true
         tags: YourUsername/YourRepository:${{ github.ref }}
         username: ${{ secrets.fsteve22 }}
-        password: ${{ secrets.KNFS@2205 }}
+        password: ${{ secrets.dckr_pat_z3tcV1LU86NAQTV0PBMXuWrC7H4 }}
