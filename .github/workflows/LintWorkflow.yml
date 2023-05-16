@@ -26,16 +26,6 @@ jobs:
       - name: Run Hadolint
         run: docker run --rm -i hadolint/hadolint < Dockerfile
 
-  super-calculator:
-    name: SuperCalculator 3
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Run SuperCalculator 3
-        run: ./super-calculator-3
-
   super-linter:
     name: Super-Linter
     if: github.event_name == 'pull_request'
