@@ -27,6 +27,6 @@ jobs:
       with:
         context: .
         push: true
-        tags: YourUsername/YourRepository:${{ github.ref }}
+        tags: FSTEVE22/SuperCalculator:${{ github.ref }}
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
