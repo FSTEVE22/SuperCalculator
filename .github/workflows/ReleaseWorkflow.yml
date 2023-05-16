@@ -1,32 +1,38 @@
-name: Release Workflow
 on:
   push:
     tags:
       - '*'
-      
+
 jobs:
-  build:
+  release:
+    name: Release
     runs-on: ubuntu-latest
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Install Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.19
-    - name: Install dependencies
-      run: |
-        go mod download
-        go get github.com/goreleaser/goreleaser@v0.186.0
-        sudo apt-get install -y rpm
-    - name: Build and package for release
-      run: |
-        goreleaser --rm-dist
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        push: true
-        tags: fsteve22/super_calculator:${{ github.ref }}
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.19
+
+      - name: Run goreleaser
+        run: |
+          curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | sh
+          go mod tidy
+          go mod vendor
+          ./bin/goreleaser --snapshot --rm-dist
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build and push Docker image
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          docker buildx create --use
+          docker buildx build --platform linux/amd64,linux/arm64 --push --tag ${{ secrets.DOCKER_USERNAME }}/super_calculator:${{ github.ref }} .
+
+
